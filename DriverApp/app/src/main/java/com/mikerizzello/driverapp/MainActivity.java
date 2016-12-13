@@ -7,7 +7,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -43,12 +45,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mMapFragment == null) {
             mMapFragment = SupportMapFragment.newInstance();
             mMapFragment.getMapAsync(this);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.map, mMapFragment)
+                    .commit();
         }
 
-        Button updateLocationButton = (Button)findViewById(R.id.update_location);
+        final Button updateLocationButton = (Button)findViewById(R.id.update_location);
         Button myLocationButton = (Button)findViewById(R.id.my_location_button);
 
         this.orderIdField = (EditText) findViewById(R.id.order_id_field);
+        this.orderIdField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        this.orderIdField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    // do your stuff here
+                    updateLocation();
+                }
+                return false;
+            }
+        });
+
 
         updateLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +123,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        this.googleMap = googleMap;
+        Log.e("In Here", "In Here");
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -118,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
 
-        this.googleMap = googleMap;
+        Log.e("In Here", "In Here");
         this.googleMap.setMyLocationEnabled(true);
         this.showUserLocation();
 

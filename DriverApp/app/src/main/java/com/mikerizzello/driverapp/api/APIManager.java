@@ -30,25 +30,9 @@ public class APIManager {
         this.client = new AsyncHttpClient();
     }
 
-    public void createOrder(JsonHttpResponseHandler handler)
-    {
-        String url = Constants.CREATE_ORDER_ENDPOINT;
-
-        Log.e("URL", "URL " + url);
-        client.get(mContext, url, null, handler);
-    }
-
-    public void trackOrder(int orderID, JsonHttpResponseHandler handler)
-    {
-        String url = Constants.TRACK_ORDER_ENDPOINT + "?orderId=" + orderID;
-
-        Log.e("URL", "URL " + url);
-        client.get(mContext, url, null, handler);
-    }
-
     public void submitLocation(int orderID, Location location, JsonHttpResponseHandler handler)
     {
-        String url = Constants.SUBMIT_LOCATION_ENDPOINT + "?orderId=" + orderID + "&latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude();
+        String url = Constants.BASEURL + Constants.SUBMIT_LOCATION_ENDPOINT + "?orderId=" + orderID + "&latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude();
 
         Log.e("URL", "URL " + url);
         client.get(mContext, url, null, handler);
